@@ -1,0 +1,10 @@
+adapters==0.1.0
+conllu==4.5.3
+datasets==2.15.0
+evaluate==0.4.1
+hanzipy==1.0.4
+numpy==1.26.2
+pandas==2.1.4
+torch==2.1.2
+tqdm==4.66.1
+transformers==4.35.2
