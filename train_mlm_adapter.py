@@ -464,6 +464,7 @@ def main():
         )
         logger.info(f"Set active embeddings to {model.active_embeddings}")
 
+    # Initialize adapters
     adapter_config = AdapterConfig.load(adapter_args.adapter_config)
     model.add_adapter("mlm", config=adapter_config)
     if model_args.tokenizer_name or model_args.use_masked_lm_adapter_head:

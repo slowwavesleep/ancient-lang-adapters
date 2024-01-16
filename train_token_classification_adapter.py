@@ -450,7 +450,7 @@ def main():
             Path(model_args.tokenizer_name).resolve().as_posix(),
             local_files_only=True,
         )
-    # STACK ADAPTERS
+    # Initialize adapters
     mlm_adapter_path = (Path(model_args.mlm_adapter_path) / "mlm").resolve()
     adapter_config_path = mlm_adapter_path / "adapter_config.json"
     if not data_args.task_name:
