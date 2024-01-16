@@ -8,6 +8,7 @@ from lemma_rules import gen_lemma_rule
 
 data_dir = Path("./ST2024").resolve()
 output_dir = Path("./converted_data").resolve()
+output_dir.mkdir(exist_ok=True)
 
 langs = [
     path.stem.split("_")[0]

@@ -8,6 +8,7 @@ from hanzipy.decomposer import HanziDecomposer
 
 data_dir = Path("./ST2024").resolve()
 output_dir = Path("./converted_data").resolve()
+output_dir.mkdir(exist_ok=True)
 
 langs = ["lzh"]
 
