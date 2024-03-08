@@ -1,6 +1,4 @@
-
 import argparse
-import json
 from pathlib import Path
 
 import pandas as pd
@@ -10,11 +8,23 @@ from adapters import AdapterConfig, AutoAdapterModel
 import torch
 from tqdm import trange
 
+
+def parse_arguments() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model_name", type=str, required=True)
+    parser.add_argument("--run_num", type=int, default=1)
+    parser.add_argument("--mlm", action="store_true")
+    return parser.parse_args()
+
+
 # model_name = "best-heur"
 # run_num = 1
-model_name = "best-synth"
-run_num = 2
+# model_name = "best-synth"
+# run_num = 2
 
+args = parse_arguments()
+model_name = args.model_name
+run_num = args.run_num
 
 polarity2id = {"negative": 0, "positive": 1, "neutral": 2, "mixed": 3}
 id2polarity = {value: key for key, value in polarity2id.items()}
@@ -42,11 +52,11 @@ model = AutoAdapterModel.from_pretrained(
 tokenizer = AutoTokenizer.from_pretrained("xlm-roberta-base")
 
 root_adapter_path = Path(f"./hala_models/{model_name}").resolve()
-mlm_adapter_path = root_adapter_path / "mlm"
-mlm_adapter_config_path = mlm_adapter_path / "adapter_config.json"
-mlm_adapter_config = AdapterConfig.load(mlm_adapter_config_path.as_posix())
-
-model.load_adapter(mlm_adapter_path.as_posix(), config=mlm_adapter_config)
+if args.mlm:
+    mlm_adapter_path = root_adapter_path / "mlm"
+    mlm_adapter_config_path = mlm_adapter_path / "adapter_config.json"
+    mlm_adapter_config = AdapterConfig.load(mlm_adapter_config_path.as_posix())
+    model.load_adapter(mlm_adapter_path.as_posix(), config=mlm_adapter_config)
 
 polarity_adapter_path = root_adapter_path / "polarity"
 polarity_adapter_config_path = polarity_adapter_path / "adapter_config.json"
@@ -58,8 +68,10 @@ model.load_adapter(
     config=polarity_adapter_config,
 )
 
-
-model.active_adapters = ac.Stack("mlm", "polarity")
+if args.mlm:
+    model.active_adapters = ac.Stack("mlm", "polarity")
+else:
+    model.set_active_adapters("polarity")
 
 model.to("mps")
 
